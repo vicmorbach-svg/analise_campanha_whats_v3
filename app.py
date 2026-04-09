@@ -77,8 +77,8 @@ def load_and_process_pagamentos(uploaded_file):
 
         IDX_MATRICULA   = 0
         IDX_VENCIMENTO  = 4   # <-- ajuste se necessário
-        IDX_DT_PGTO     = 6
-        IDX_VALOR       = 9
+        IDX_DT_PGTO     = 5
+        IDX_VALOR       = 3
         IDX_TIPO_FATURA = 11  # <-- ajuste se necessário
         IDX_UTILIZACAO  = 9  # <-- ajuste se necessário
         IDX_TIPO_PGTO   = 12  # <-- ajuste se necessário

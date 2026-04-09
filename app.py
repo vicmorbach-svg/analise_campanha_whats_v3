@@ -66,8 +66,8 @@ def load_and_process_pagamentos(uploaded_file):
         col_indices = [0, 5, 8]
         col_names   = ['MATRICULA_PAGAMENTO', 'DATA_PAGAMENTO', 'VALOR_PAGO']
 
-        if df.shape[1] > 18:
-            col_indices.append(18)
+        if df.shape[1] > 12:
+            col_indices.append(12)
             col_names.append('TIPO_PAGAMENTO')
 
         df_pagamentos = df.iloc[:, col_indices].copy()

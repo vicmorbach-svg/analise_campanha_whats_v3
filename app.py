@@ -64,7 +64,7 @@ def load_and_process_pagamentos(uploaded_file):
 
         # --- COLUNAS ESSENCIAIS (lógica idêntica à versão que funcionava) ---
         # Lidas de forma isolada para garantir integridade dos dados
-        col_indices = [0, 6, 9]
+        col_indices = [0, 6, 8]
         col_names   = ['MATRICULA_PAGAMENTO', 'DATA_PAGAMENTO', 'VALOR_PAGO']
 
         if df.shape[1] > 18:
@@ -89,9 +89,9 @@ def load_and_process_pagamentos(uploaded_file):
 
         # --- COLUNAS OPCIONAIS (adicionadas do df original, sem afetar as essenciais) ---
         # Ajuste os índices abaixo conforme seu arquivo:
-        IDX_VENCIMENTO  = 5   # <-- confirme
+        IDX_VENCIMENTO  = 4   # <-- confirme
         IDX_TIPO_FATURA = 11  # <-- confirme
-        IDX_UTILIZACAO  = 15  # <-- confirme
+        IDX_UTILIZACAO  = 9  # <-- confirme
 
         if df.shape[1] > IDX_VENCIMENTO:
             df_pagamentos['VENCIMENTO'] = pd.to_datetime(

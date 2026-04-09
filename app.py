@@ -62,9 +62,8 @@ def load_and_process_pagamentos(uploaded_file):
             st.sidebar.error(f"Arquivo de Pagamentos: Esperava pelo menos 10 colunas, mas encontrou {df.shape[1]}.")
             return None
 
-        # --- COLUNAS ESSENCIAIS (lógica idêntica à versão que funcionava) ---
-        # Lidas de forma isolada para garantir integridade dos dados
-        col_indices = [0, 6, 8]
+        # --- COLUNAS ESSENCIAIS ---
+        col_indices = [0, 5, 8]
         col_names   = ['MATRICULA_PAGAMENTO', 'DATA_PAGAMENTO', 'VALOR_PAGO']
 
         if df.shape[1] > 18:
@@ -74,6 +73,21 @@ def load_and_process_pagamentos(uploaded_file):
         df_pagamentos = df.iloc[:, col_indices].copy()
         df_pagamentos.columns = col_names
 
+        # --- COLUNAS OPCIONAIS (adicionadas ANTES dos dropna, enquanto os tamanhos ainda batem) ---
+        IDX_VENCIMENTO  = 4   # <-- confirme
+        IDX_TIPO_FATURA = 11  # <-- confirme
+        IDX_UTILIZACAO  = 9  # <-- confirme
+
+        if df.shape[1] > IDX_VENCIMENTO:
+            df_pagamentos['VENCIMENTO'] = df.iloc[:, IDX_VENCIMENTO].values
+
+        if df.shape[1] > IDX_TIPO_FATURA:
+            df_pagamentos['TIPO_FATURA'] = df.iloc[:, IDX_TIPO_FATURA].values
+
+        if df.shape[1] > IDX_UTILIZACAO:
+            df_pagamentos['UTILIZACAO'] = df.iloc[:, IDX_UTILIZACAO].values
+
+        # --- TRATAMENTOS (aplicados após todas as colunas estarem no dataframe) ---
         df_pagamentos['MATRICULA_PAGAMENTO'] = df_pagamentos['MATRICULA_PAGAMENTO'].astype(str).str.replace(r'\.0$', '', regex=True).str.strip()
 
         df_pagamentos['DATA_PAGAMENTO'] = pd.to_datetime(df_pagamentos['DATA_PAGAMENTO'], errors='coerce', dayfirst=True)
@@ -87,25 +101,19 @@ def load_and_process_pagamentos(uploaded_file):
             df_pagamentos['TIPO_PAGAMENTO'] = df_pagamentos['TIPO_PAGAMENTO'].astype(str).str.strip()
             df_pagamentos['TIPO_PAGAMENTO'] = df_pagamentos['TIPO_PAGAMENTO'].replace('nan', 'Não informado')
 
-        # --- COLUNAS OPCIONAIS (adicionadas do df original, sem afetar as essenciais) ---
-        # Ajuste os índices abaixo conforme seu arquivo:
-        IDX_VENCIMENTO  = 4   # <-- confirme
-        IDX_TIPO_FATURA = 11  # <-- confirme
-        IDX_UTILIZACAO  = 9  # <-- confirme
-
-        if df.shape[1] > IDX_VENCIMENTO:
-            df_pagamentos['VENCIMENTO'] = pd.to_datetime(
-                df.iloc[:, IDX_VENCIMENTO].values, errors='coerce', dayfirst=True
-            )
+        if 'VENCIMENTO' in df_pagamentos.columns:
+            df_pagamentos['VENCIMENTO'] = pd.to_datetime(df_pagamentos['VENCIMENTO'], errors='coerce', dayfirst=True)
             df_pagamentos['MES_FATURA']     = df_pagamentos['VENCIMENTO'].dt.month
             df_pagamentos['ANO_FATURA']     = df_pagamentos['VENCIMENTO'].dt.year
             df_pagamentos['MES_ANO_FATURA'] = df_pagamentos['VENCIMENTO'].dt.strftime('%m/%Y')
 
-        if df.shape[1] > IDX_TIPO_FATURA:
-            df_pagamentos['TIPO_FATURA'] = df.iloc[:, IDX_TIPO_FATURA].astype(str).str.strip().replace('nan', 'Não informado')
+        if 'TIPO_FATURA' in df_pagamentos.columns:
+            df_pagamentos['TIPO_FATURA'] = df_pagamentos['TIPO_FATURA'].astype(str).str.strip()
+            df_pagamentos['TIPO_FATURA'] = df_pagamentos['TIPO_FATURA'].replace('nan', 'Não informado')
 
-        if df.shape[1] > IDX_UTILIZACAO:
-            df_pagamentos['UTILIZACAO'] = df.iloc[:, IDX_UTILIZACAO].astype(str).str.strip().replace('nan', 'Não informado')
+        if 'UTILIZACAO' in df_pagamentos.columns:
+            df_pagamentos['UTILIZACAO'] = df_pagamentos['UTILIZACAO'].astype(str).str.strip()
+            df_pagamentos['UTILIZACAO'] = df_pagamentos['UTILIZACAO'].replace('nan', 'Não informado')
 
         st.sidebar.success("Arquivo de Pagamentos processado com sucesso!")
         return df_pagamentos

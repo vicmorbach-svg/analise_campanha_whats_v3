@@ -93,7 +93,14 @@ def load_and_process_pagamentos(uploaded_file):
         df_pagamentos['DATA_PAGAMENTO'] = pd.to_datetime(df_pagamentos['DATA_PAGAMENTO'], errors='coerce', dayfirst=True)
         df_pagamentos.dropna(subset=['DATA_PAGAMENTO'], inplace=True)
 
-        df_pagamentos['VALOR_PAGO'] = df_pagamentos['VALOR_PAGO'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
+        def parse_valor(val):
+            s = str(val).strip()
+            if ',' in s:
+                # Formato brasileiro: remove separador de milhar (.) e converte decimal (,) para (.)
+                s = s.replace('.', '').replace(',', '.')
+            return s
+
+        df_pagamentos['VALOR_PAGO'] = df_pagamentos['VALOR_PAGO'].apply(parse_valor)
         df_pagamentos['VALOR_PAGO'] = pd.to_numeric(df_pagamentos['VALOR_PAGO'], errors='coerce')
         df_pagamentos.dropna(subset=['VALOR_PAGO'], inplace=True)
 

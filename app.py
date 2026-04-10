@@ -169,6 +169,24 @@ def load_and_process_clientes(uploaded_file):
         st.sidebar.error(f"Erro ao processar arquivo de Clientes: {e}")
         return None
 
+# Função auxiliar para formatar valores em R$
+def fmt_brl(valor):
+    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+# Função auxiliar para adicionar rótulos de valor nas barras
+def add_bar_labels(fig, formato='valor'):
+    for trace in fig.data:
+        if hasattr(trace, 'y') and trace.y is not None:
+            if formato == 'valor':
+                texts = [fmt_brl(v) if v is not None else '' for v in trace.y]
+            else:
+                texts = [str(int(v)) if v is not None else '' for v in trace.y]
+            trace.text = texts
+            trace.textposition = 'outside'
+            trace.textfont = dict(size=11)
+    fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+    return fig
+
 # --- Interface Streamlit ---
 
 st.sidebar.header("Upload de Arquivos")

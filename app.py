@@ -303,7 +303,7 @@ if executar_analise:
                 with col8:
                     st.metric("Custo da campanha", f"R$({total_clientes_notificados}*o,o5)")
                 with col9:
-                    st.metric("ROI", f" ((({valor_total_arreacadado}-({total_clientes_notificados}*o,o5))/({total_clientes_notificados}*o,o5))*100)%")
+                    st.metric("ROI", f" ((({valor_total_arrecadado}-({total_clientes_notificados}*o,o5))/({total_clientes_notificados}*o,o5))*100)%")
 
                 if not df_pagamentos_campanha.empty:
                     st.subheader(f"Pagamentos por Dia Após o Envio (Janela de {janela_dias} dias)")

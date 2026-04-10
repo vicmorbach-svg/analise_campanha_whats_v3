@@ -280,23 +280,30 @@ if executar_analise:
             with aba1:
                 st.subheader("Resultados da Análise da Campanha")
 
-                col1, col2, col3, col4 = st.columns(4)
+                col1, col2, col3 = st.columns(3)
                 with col1:
                     st.metric("Total de clientes notificados", f"{total_clientes_notificados}")
                 with col2:
                     st.metric("Clientes que pagaram na janela", f"{clientes_que_pagaram_matriculas}")
                 with col3:
                     st.metric("Taxa de eficiência (clientes)", f"{taxa_eficiencia_clientes:,.2f}%".replace(",", "X").replace(".", ",").replace("X", "."))
-                with col4:
-                    st.metric("Ticket médio", f"R$ {ticket_medio:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+                    
 
-                col5, col6, col7 = st.columns(3)
-                with col5:
+                col4, col5, col6 = st.columns(3)
+                with col4:
                     st.metric("Valor total arrecadado na campanha", f"R$ {valor_total_arrecadado:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-                with col6:
+                with col5:
                     st.metric("Total da dívida dos notificados", f"R$ {total_divida_notificados:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-                with col7:
+                with col6:
                     st.metric("Taxa de eficiência (valor)", f"{taxa_eficiencia_valor:,.2f}%".replace(",", "X").replace(".", ",").replace("X", "."))
+
+                col7, col8, col9 = st.columns(3)
+                with col7:
+                    st.metric("Ticket médio", f"R$ {ticket_medio:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+                with col8:
+                    st.metric("Custo da campanha", f"R$({total_clientes_notificados}*o,o5)")
+                with col9:
+                    st.metric("ROI", f" ((({valor_total_arreacadado}-({total_clientes_notificados}*o,o5))/({total_clientes_notificados}*o,o5))*100)%")
 
                 if not df_pagamentos_campanha.empty:
                     st.subheader(f"Pagamentos por Dia Após o Envio (Janela de {janela_dias} dias)")

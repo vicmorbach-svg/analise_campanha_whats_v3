@@ -323,6 +323,11 @@ if executar_analise:
                     fig_dias.update_layout(xaxis_title="Dias Após o Envio", yaxis_title="Valor Total Pago (R$)")
                     st.plotly_chart(fig_dias, use_container_width=True, key="fig_dias")
 
+                    # Tabela pagamentos por dia
+                    tab_dias = pagamentos_por_dia.copy()
+                    tab_dias['Valor Total Pago'] = tab_dias['Valor Total Pago'].apply(fmt_brl)
+                    st.dataframe(tab_dias, use_container_width=True, hide_index=True)
+
                     if 'TIPO_PAGAMENTO' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Arrecadado por Canal de Pagamento")
 
@@ -339,6 +344,12 @@ if executar_analise:
                         )
                         fig_canal.update_layout(xaxis_title="Canal de Pagamento", yaxis_title="Valor Total Pago (R$)", showlegend=False)
                         st.plotly_chart(fig_canal, use_container_width=True, key="fig_canal_aba1")
+                        
+                        #Tabela canal aba1
+                        tab_canal_v1 = pagamentos_por_canal.copy()
+                        tab_canal_v1.columns = ['Canal de Pagamento', 'Valor Total Pago']
+                        tab_canal_v1['Valor Total Pago'] = tab_canal_v1['Valor Total Pago'].apply(fmt_brl)
+                        st.dataframe(tab_canal_v1, use_container_width=True, hide_index=True)
                 else:
                     st.info("Nenhum pagamento encontrado dentro da janela definida para a campanha.")
 
@@ -377,6 +388,12 @@ if executar_analise:
                         fig_cidade_clientes.update_layout(xaxis_title="Cidade", yaxis_title="Clientes que Pagaram")
                         st.plotly_chart(fig_cidade_clientes, use_container_width=True, key="fig_cidade_clientes")
 
+                        # Tabela cidade
+                        tab_cidade = cidade_resumo.copy()
+                        tab_cidade.columns = ['Cidade', 'Clientes que Pagaram', 'Valor Arrecadado']
+                        tab_cidade['Valor Arrecadado'] = tab_cidade['Valor Arrecadado'].apply(fmt_brl)
+                        st.dataframe(tab_cidade, use_container_width=True, hide_index=True)
+
                         if 'TIPO_PAGAMENTO' in df_pagamentos_campanha.columns:
                             st.subheader("Tipo de Pagamento por Cidade")
                             cidade_canal = df_pagamentos_campanha.groupby(['CIDADE', 'TIPO_PAGAMENTO'])['VALOR_PAGO'].sum().reset_index()
@@ -389,6 +406,13 @@ if executar_analise:
                             )
                             fig_cidade_canal.update_layout(xaxis_title="Cidade", yaxis_title="Valor Pago (R$)")
                             st.plotly_chart(fig_cidade_canal, use_container_width=True, key="fig_cidade_canal")
+
+                            # Tabela cidade x canal
+                            tab_cidade_canal = cidade_canal.copy()
+                            tab_cidade_canal.columns = ['Cidade', 'Canal de Pagamento', 'Valor Pago']
+                            tab_cidade_canal['Valor Pago'] = tab_cidade_canal['Valor Pago'].apply(fmt_brl)
+                            tab_cidade_canal = tab_cidade_canal.sort_values(['Cidade', 'Canal de Pagamento'])
+                            st.dataframe(tab_cidade_canal, use_container_width=True, hide_index=True)
 
                     if tem_diretoria:
                         st.subheader("Análise por Diretoria")
@@ -417,6 +441,13 @@ if executar_analise:
                         fig_diretoria_clientes.update_layout(xaxis_title="Diretoria", yaxis_title="Clientes que Pagaram")
                         st.plotly_chart(fig_diretoria_clientes, use_container_width=True, key="fig_diretoria_clientes")
 
+                        # Tabela diretoria
+                        tab_diretoria = diretoria_resumo.copy()
+                        tab_diretoria.columns = ['Diretoria', 'Clientes que Pagaram', 'Valor Arrecadado']
+                        tab_diretoria['Valor Arrecadado'] = tab_diretoria['Valor Arrecadado'].apply(fmt_brl)
+                        st.dataframe(tab_diretoria, use_container_width=True, hide_index=True)
+
+
                         if 'TIPO_PAGAMENTO' in df_pagamentos_campanha.columns:
                             st.subheader("Tipo de Pagamento por Diretoria")
                             diretoria_canal = df_pagamentos_campanha.groupby(['DIRETORIA', 'TIPO_PAGAMENTO'])['VALOR_PAGO'].sum().reset_index()
@@ -429,6 +460,13 @@ if executar_analise:
                             )
                             fig_diretoria_canal.update_layout(xaxis_title="Diretoria", yaxis_title="Valor Pago (R$)")
                             st.plotly_chart(fig_diretoria_canal, use_container_width=True, key="fig_diretoria_canal")
+
+                            # Tabela diretoria x canal
+                            tab_diretoria_canal = diretoria_canal.copy()
+                            tab_diretoria_canal.columns = ['Diretoria', 'Canal de Pagamento', 'Valor Pago']
+                            tab_diretoria_canal['Valor Pago'] = tab_diretoria_canal['Valor Pago'].apply(fmt_brl)
+                            tab_diretoria_canal = tab_diretoria_canal.sort_values(['Diretoria', 'Canal de Pagamento'])
+                            st.dataframe(tab_diretoria_canal, use_container_width=True, hide_index=True)
 
                     if not tem_cidade and not tem_diretoria:
                         st.info("Colunas 'CIDADE' e 'DIRETORIA' não encontradas na base de clientes.")
@@ -494,6 +532,12 @@ if executar_analise:
                         fig_ant_qtd.update_layout(xaxis_title="Faixa de Antiguidade", yaxis_title="Quantidade de Pagamentos")
                         st.plotly_chart(fig_ant_qtd, use_container_width=True, key="fig_ant_qtd")
 
+                        # Tabela antiguidade
+                        tab_ant = antiguidade_resumo.copy()
+                        tab_ant.columns = ['Faixa de Antiguidade', 'Quantidade de Pagamentos', 'Valor Pago']
+                        tab_ant['Valor Pago'] = tab_ant['Valor Pago'].apply(fmt_brl)
+                        st.dataframe(tab_ant, use_container_width=True, hide_index=True)
+
                     if 'MES_ANO_FATURA' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Pago por Mês/Ano da Fatura")
 
@@ -511,6 +555,12 @@ if executar_analise:
                         )
                         fig_mes_ano.update_layout(xaxis_title="Mês/Ano da Fatura", yaxis_title="Valor Pago (R$)")
                         st.plotly_chart(fig_mes_ano, use_container_width=True, key="fig_mes_ano")
+
+                        # Tabela mês/ano
+                        tab_mes_ano = mes_ano_resumo[['MES_ANO_FATURA', 'VALOR_PAGO']].copy()
+                        tab_mes_ano.columns = ['Mês/Ano da Fatura', 'Valor Pago']
+                        tab_mes_ano['Valor Pago'] = tab_mes_ano['Valor Pago'].apply(fmt_brl)
+                        st.dataframe(tab_mes_ano, use_container_width=True, hide_index=True)
 
                     if 'TIPO_FATURA' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Pago por Tipo de Fatura")
@@ -531,6 +581,12 @@ if executar_analise:
                         fig_tipo_fatura.update_layout(xaxis_title="Tipo de Fatura", yaxis_title="Valor Pago (R$)", showlegend=False)
                         st.plotly_chart(fig_tipo_fatura, use_container_width=True, key="fig_tipo_fatura")
 
+                        # Tabela tipo fatura
+                        tab_tipo_fatura = tipo_fatura_resumo.copy()
+                        tab_tipo_fatura.columns = ['Tipo de Fatura', 'Quantidade', 'Valor Pago']
+                        tab_tipo_fatura['Valor Pago'] = tab_tipo_fatura['Valor Pago'].apply(fmt_brl)
+                        st.dataframe(tab_tipo_fatura, use_container_width=True, hide_index=True)
+
                     if 'UTILIZACAO' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Pago por Utilização (Sub. Categoria)")
 
@@ -549,6 +605,12 @@ if executar_analise:
                         )
                         fig_utilizacao.update_layout(xaxis_title="Utilização", yaxis_title="Valor Pago (R$)", showlegend=False)
                         st.plotly_chart(fig_utilizacao, use_container_width=True, key="fig_utilizacao")
+
+                    # Tabela utilização
+                        tab_utilizacao = utilizacao_resumo.copy()
+                        tab_utilizacao.columns = ['Utilização', 'Quantidade', 'Valor Pago']
+                        tab_utilizacao['Valor Pago'] = tab_utilizacao['Valor Pago'].apply(fmt_brl)
+                        st.dataframe(tab_utilizacao, use_container_width=True, hide_index=True)
 
                 else:
                     st.info("Nenhum pagamento encontrado dentro da janela definida para a campanha.")
@@ -590,6 +652,12 @@ if executar_analise:
                     )
                     fig_canal_qtd.update_layout(xaxis_title="Canal de Pagamento", yaxis_title="Clientes que Pagaram", showlegend=False)
                     st.plotly_chart(fig_canal_qtd, use_container_width=True, key="fig_canal_qtd")
+
+                    # Tabela canal consolidada
+                    tab_canal = pd.merge(pagamentos_por_canal, qtd_por_canal, on='TIPO_PAGAMENTO')
+                    tab_canal.columns = ['Canal de Pagamento', 'Valor Total Pago', 'Clientes que Pagaram']
+                    tab_canal['Valor Total Pago'] = tab_canal['Valor Total Pago'].apply(fmt_brl)
+                    st.dataframe(tab_canal, use_container_width=True, hide_index=True)
 
                 else:
                     st.info("Coluna 'Tipo Pagamento' não encontrada no arquivo de pagamentos.")

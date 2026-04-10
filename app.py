@@ -312,7 +312,7 @@ if executar_analise:
                         hover_data={'Valor Total Pago': ':.2f'}
                     )
                     fig_dias.update_layout(xaxis_title="Dias Após o Envio", yaxis_title="Valor Total Pago (R$)")
-                    st.plotly_chart(fig_dias, use_container_width=True)
+                    st.plotly_chart(fig_dias, use_container_width=True, key="fig_dias")
 
                     if 'TIPO_PAGAMENTO' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Arrecadado por Canal de Pagamento")
@@ -329,7 +329,7 @@ if executar_analise:
                             hover_data={'VALOR_PAGO': ':.2f'}
                         )
                         fig_canal.update_layout(xaxis_title="Canal de Pagamento", yaxis_title="Valor Total Pago (R$)", showlegend=False)
-                        st.plotly_chart(fig_canal, use_container_width=True)
+                        st.plotly_chart(fig_canal, use_container_width=True, key="fig_canal_aba1")
                 else:
                     st.info("Nenhum pagamento encontrado dentro da janela definida para a campanha.")
 
@@ -357,7 +357,7 @@ if executar_analise:
                             hover_data={'Valor_Arrecadado': ':.2f'}
                         )
                         fig_cidade_valor.update_layout(xaxis_title="Cidade", yaxis_title="Valor Arrecadado (R$)")
-                        st.plotly_chart(fig_cidade_valor, use_container_width=True)
+                        st.plotly_chart(fig_cidade_valor, use_container_width=True, key="fig_cidade_valor")
 
                         fig_cidade_clientes = px.bar(
                             cidade_resumo,
@@ -366,7 +366,7 @@ if executar_analise:
                             labels={'CIDADE': 'Cidade', 'Clientes_que_Pagaram': 'Clientes que Pagaram'}
                         )
                         fig_cidade_clientes.update_layout(xaxis_title="Cidade", yaxis_title="Clientes que Pagaram")
-                        st.plotly_chart(fig_cidade_clientes, use_container_width=True)
+                        st.plotly_chart(fig_cidade_clientes, use_container_width=True, key="fig_cidade_clientes")
 
                         if 'TIPO_PAGAMENTO' in df_pagamentos_campanha.columns:
                             st.subheader("Tipo de Pagamento por Cidade")
@@ -379,7 +379,7 @@ if executar_analise:
                                 barmode='stack'
                             )
                             fig_cidade_canal.update_layout(xaxis_title="Cidade", yaxis_title="Valor Pago (R$)")
-                            st.plotly_chart(fig_cidade_canal, use_container_width=True)
+                            st.plotly_chart(fig_cidade_canal, use_container_width=True, key="fig_cidade_canal")
 
                     if tem_diretoria:
                         st.subheader("Análise por Diretoria")
@@ -397,7 +397,7 @@ if executar_analise:
                             hover_data={'Valor_Arrecadado': ':.2f'}
                         )
                         fig_diretoria_valor.update_layout(xaxis_title="Diretoria", yaxis_title="Valor Arrecadado (R$)")
-                        st.plotly_chart(fig_diretoria_valor, use_container_width=True)
+                        st.plotly_chart(fig_diretoria_valor, use_container_width=True, key="fig_diretoria_valor")
 
                         fig_diretoria_clientes = px.bar(
                             diretoria_resumo,
@@ -406,7 +406,7 @@ if executar_analise:
                             labels={'DIRETORIA': 'Diretoria', 'Clientes_que_Pagaram': 'Clientes que Pagaram'}
                         )
                         fig_diretoria_clientes.update_layout(xaxis_title="Diretoria", yaxis_title="Clientes que Pagaram")
-                        st.plotly_chart(fig_diretoria_clientes, use_container_width=True)
+                        st.plotly_chart(fig_diretoria_clientes, use_container_width=True, key="fig_diretoria_clientes")
 
                         if 'TIPO_PAGAMENTO' in df_pagamentos_campanha.columns:
                             st.subheader("Tipo de Pagamento por Diretoria")
@@ -419,7 +419,7 @@ if executar_analise:
                                 barmode='stack'
                             )
                             fig_diretoria_canal.update_layout(xaxis_title="Diretoria", yaxis_title="Valor Pago (R$)")
-                            st.plotly_chart(fig_diretoria_canal, use_container_width=True)
+                            st.plotly_chart(fig_diretoria_canal, use_container_width=True, key="fig_diretoria_canal")
 
                     if not tem_cidade and not tem_diretoria:
                         st.info("Colunas 'CIDADE' e 'DIRETORIA' não encontradas na base de clientes.")
@@ -474,7 +474,7 @@ if executar_analise:
                             hover_data={'Valor_Pago': ':.2f'}
                         )
                         fig_ant_valor.update_layout(xaxis_title="Faixa de Antiguidade", yaxis_title="Valor Pago (R$)")
-                        st.plotly_chart(fig_ant_valor, use_container_width=True)
+                        st.plotly_chart(fig_ant_valor, use_container_width=True, key="fig_ant_valor")
 
                         fig_ant_qtd = px.bar(
                             antiguidade_resumo,
@@ -483,7 +483,7 @@ if executar_analise:
                             labels={'FAIXA_ANTIGUIDADE': 'Faixa de Antiguidade', 'Quantidade': 'Quantidade de Pagamentos'}
                         )
                         fig_ant_qtd.update_layout(xaxis_title="Faixa de Antiguidade", yaxis_title="Quantidade de Pagamentos")
-                        st.plotly_chart(fig_ant_qtd, use_container_width=True)
+                        st.plotly_chart(fig_ant_qtd, use_container_width=True, key="fig_ant_qtd")
 
                     if 'MES_ANO_FATURA' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Pago por Mês/Ano da Fatura")
@@ -501,7 +501,7 @@ if executar_analise:
                             hover_data={'VALOR_PAGO': ':.2f'}
                         )
                         fig_mes_ano.update_layout(xaxis_title="Mês/Ano da Fatura", yaxis_title="Valor Pago (R$)")
-                        st.plotly_chart(fig_mes_ano, use_container_width=True)
+                        st.plotly_chart(fig_mes_ano, use_container_width=True, key="fig_mes_ano")
 
                     if 'TIPO_FATURA' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Pago por Tipo de Fatura")
@@ -520,7 +520,7 @@ if executar_analise:
                             hover_data={'Valor_Pago': ':.2f', 'Quantidade': True}
                         )
                         fig_tipo_fatura.update_layout(xaxis_title="Tipo de Fatura", yaxis_title="Valor Pago (R$)", showlegend=False)
-                        st.plotly_chart(fig_tipo_fatura, use_container_width=True)
+                        st.plotly_chart(fig_tipo_fatura, use_container_width=True, key="fig_tipo_fatura")
 
                     if 'UTILIZACAO' in df_pagamentos_campanha.columns:
                         st.subheader("Valor Pago por Utilização (Sub. Categoria)")
@@ -539,7 +539,7 @@ if executar_analise:
                             hover_data={'Valor_Pago': ':.2f', 'Quantidade': True}
                         )
                         fig_utilizacao.update_layout(xaxis_title="Utilização", yaxis_title="Valor Pago (R$)", showlegend=False)
-                        st.plotly_chart(fig_utilizacao, use_container_width=True)
+                        st.plotly_chart(fig_utilizacao, use_container_width=True, key="fig_utilizacao")
 
                 else:
                     st.info("Nenhum pagamento encontrado dentro da janela definida para a campanha.")
@@ -564,7 +564,7 @@ if executar_analise:
                         hover_data={'VALOR_PAGO': ':.2f'}
                     )
                     fig_canal.update_layout(xaxis_title="Canal de Pagamento", yaxis_title="Valor Total Pago (R$)", showlegend=False)
-                    st.plotly_chart(fig_canal, use_container_width=True)
+                    st.plotly_chart(fig_canal, use_container_width=True, key="fig_canal_aba4")
 
                     st.subheader("Clientes que Pagaram por Canal")
 
@@ -580,7 +580,7 @@ if executar_analise:
                         color='TIPO_PAGAMENTO'
                     )
                     fig_canal_qtd.update_layout(xaxis_title="Canal de Pagamento", yaxis_title="Clientes que Pagaram", showlegend=False)
-                    st.plotly_chart(fig_canal_qtd, use_container_width=True)
+                    st.plotly_chart(fig_canal_qtd, use_container_width=True, key="fig_canal_qtd")
 
                 else:
                     st.info("Coluna 'Tipo Pagamento' não encontrada no arquivo de pagamentos.")

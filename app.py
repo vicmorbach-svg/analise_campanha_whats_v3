@@ -264,6 +264,8 @@ if executar_analise:
             taxa_eficiencia_clientes = (clientes_que_pagaram_matriculas / total_clientes_notificados * 100) if total_clientes_notificados > 0 else 0
             taxa_eficiencia_valor    = (valor_total_arrecadado / total_divida_notificados * 100) if total_divida_notificados > 0 else 0
             ticket_medio             = (valor_total_arrecadado / clientes_que_pagaram_matriculas) if clientes_que_pagaram_matriculas > 0 else 0
+            custo_campanha           = total_clientes_notificados * 0.05
+            roi                      = ((valor_total_arrecado - custo_campanha) / custo_campanha *100) if custo_campanha > 0 else 0
 
             # ── ABAS ──────────────────────────────────────────
             aba1, aba2, aba3, aba4, aba5 = st.tabs([
@@ -301,9 +303,9 @@ if executar_analise:
                 with col7:
                     st.metric("Ticket médio", f"R$ {ticket_medio:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
                 with col8:
-                    st.metric("Custo da campanha", f"R$({total_clientes_notificados}*o,o5)")
+                    st.metric("Custo da campanha", f"R$ {custo_campanha:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
                 with col9:
-                    st.metric("ROI", f" ((({valor_total_arrecadado}-({total_clientes_notificados}*o,o5))/({total_clientes_notificados}*o,o5))*100)%")
+                    st.metric("ROI", f"{roi:,.2f}%".replace(",", "X").replace(".", ",").replace("X", "."))
 
                 if not df_pagamentos_campanha.empty:
                     st.subheader(f"Pagamentos por Dia Após o Envio (Janela de {janela_dias} dias)")

@@ -38,7 +38,45 @@ def load_and_process_envios(uploaded_file):
 def load_and_process_pagamentos(uploaded_file):
     try:
         df = None
-        if uploaded_file.name.endswith('.csv'):
+            # Coloque isso:
+        if uploaded_file.name.endswith('.parquet'):
+            # Parquet já vem processado, com cabeçalho e tipos corretos
+            df_pag = pd.read_parquet(uploaded_file)
+        
+            # Garantir que as colunas essenciais existem
+            colunas_esperadas = {
+                'MATRICULA_PAGAMENTO': [0],
+                'DATA_PAGAMENTO': [6],
+                'VALOR_PAGO': [9]
+            }
+            # Se o parquet já tem os nomes certos, usa direto
+            if 'MATRICULA_PAGAMENTO' in df_pag.columns:
+                # Apenas normaliza os tipos
+                df_pag['MATRICULA_PAGAMENTO'] = df_pag['MATRICULA_PAGAMENTO'].astype(str).str.replace(r'\.0$', '', regex=True).str.strip()
+                df_pag['DATA_PAGAMENTO'] = pd.to_datetime(df_pag['DATA_PAGAMENTO'], errors='coerce', dayfirst=True)
+                df_pag.dropna(subset=['DATA_PAGAMENTO'], inplace=True)
+                df_pag['VALOR_PAGO'] = pd.to_numeric(df_pag['VALOR_PAGO'], errors='coerce')
+                df_pag.dropna(subset=['VALOR_PAGO'], inplace=True)
+        
+                if 'TIPO_PAGAMENTO' in df_pag.columns:
+                    df_pag['TIPO_PAGAMENTO'] = df_pag['TIPO_PAGAMENTO'].astype(str).str.strip().replace('nan', 'Não informado')
+                if 'VENCIMENTO' in df_pag.columns:
+                    df_pag['VENCIMENTO'] = pd.to_datetime(df_pag['VENCIMENTO'], errors='coerce', dayfirst=True)
+                    df_pag['MES_FATURA']     = df_pag['VENCIMENTO'].dt.month
+                    df_pag['ANO_FATURA']     = df_pag['VENCIMENTO'].dt.year
+                    df_pag['MES_ANO_FATURA'] = df_pag['VENCIMENTO'].dt.strftime('%m/%Y')
+                if 'TIPO_FATURA' in df_pag.columns:
+                    df_pag['TIPO_FATURA'] = df_pag['TIPO_FATURA'].astype(str).str.strip().replace('nan', 'Não informado')
+                if 'UTILIZACAO' in df_pag.columns:
+                    df_pag['UTILIZACAO'] = df_pag['UTILIZACAO'].astype(str).str.strip().replace('nan', 'Não informado')
+        
+                return df_pag
+            else:
+                # Se o parquet veio sem os nomes esperados, trata como tabela posicional
+                df = df_pag
+                df.columns = range(len(df.columns))
+        
+        elif uploaded_file.name.endswith('.csv'):
             for encoding in ['latin1', 'utf-8', 'cp1252']:
                 try:
                     df = pd.read_csv(uploaded_file, sep=';', decimal=',', encoding=encoding, header=None)
@@ -47,12 +85,10 @@ def load_and_process_pagamentos(uploaded_file):
                 except Exception:
                     uploaded_file.seek(0)
                     continue
-            if df is None:
-                raise ValueError("Não foi possível ler o arquivo CSV com as codificações tentadas.")
         elif uploaded_file.name.endswith('.xlsx'):
             df = pd.read_excel(uploaded_file, header=None)
         else:
-            raise ValueError("Formato de arquivo de pagamentos não suportado.")
+            raise ValueError("Formato não suportado. Use .csv, .xlsx ou .parquet.")
 
         if df is None or df.empty:
             st.sidebar.error("Arquivo de Pagamentos está vazio ou não pôde ser lido.")
@@ -191,7 +227,7 @@ def add_bar_labels(fig, formato='valor'):
 
 st.sidebar.header("Upload de Arquivos")
 uploaded_envios     = st.sidebar.file_uploader("1. Base de Envios (Notificações - .xlsx)", type=["xlsx"])
-uploaded_pagamentos = st.sidebar.file_uploader("2. Base de Pagamentos (.csv ou .xlsx)", type=["csv", "xlsx"])
+uploaded_pagamentos = st.sidebar.file_uploader("2. Base de Pagamentos (.csv, .xlsx ou .parquet)", type=["csv", "xlsx", "parquet"])
 uploaded_clientes   = st.sidebar.file_uploader("3. Base de Identificação de Clientes (.xlsx)", type=["xlsx"])
 
 st.sidebar.header("Configurações da Análise")
